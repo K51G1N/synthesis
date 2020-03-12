@@ -1,10 +1,16 @@
 ﻿module Synthesis
 
-let abelar _ =
-    failwith "Not implemented"
+let abelar x = (x > 12 && x < 3097 && x%12=0 )
+  //  failwith "Not implemented"
 
-let area _ _ =
-    failwith "Not implemented"
+let area b h =
+   match (b >= 0.0) && (h >= 0.0) with
+   | true -> 0.5*b*h
+   | false -> failwith("Can't handle negative values")
+    
+    // failWith("Can't handle negatives")
+   
+    // failwith "Not implemented"
 
 let zollo _ =
     failwith "Not implemented"

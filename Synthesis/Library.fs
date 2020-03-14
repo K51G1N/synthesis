@@ -29,8 +29,8 @@ let min a b =
 
 let max a b =
     match a < b with
-   |true -> b
-   |false -> a
+    |true -> b
+    |false -> a
 
 let ofTime h m s = h*60*60+m*60+s
     // failwith "Not implemented"
@@ -109,7 +109,35 @@ let bizFuzz n =
    fizzing (n,0,0,0) 
    // failwith "Not implemented"
 
+//ATTEMPT 3, heavily based off of my second idea had my classmate help me finalise the syntax. His solution is entirely different.
 let monthDay day y =
+  let leap = [31;29;31;30;31;30;31;31;30;31;30;31]
+  let reg = [31;28;31;30;31;30;31;31;30;31;30;31]
+  let getMonthName index =
+    let (monthName, _) = month index
+    monthName
+
+  let rec subtract index days _list =
+    match _list with 
+    | head::tail -> 
+      match days>head with 
+      | true -> subtract (index+1) (days-head) tail
+      | false -> index
+    | _ -> failwith ""
+
+  let isInvalidCase = day<1 || y<1582
+  match isInvalidCase, (isLeap y) with 
+  | true, _ -> failwith ""
+  | _, true -> 
+    let monthIndex = subtract 1 day leap
+    getMonthName monthIndex
+  | _, false -> 
+    let monthIndex = subtract 1 day reg
+    getMonthName monthIndex
+
+//ATTEMPT 1
+//let monthDay d y =
+// failwith "Not implemented"
 //   match (y < 1582) with
 //   |true -> failwith "too soon bro"
 //   |false -> match (isLeap y) with
@@ -127,30 +155,47 @@ let monthDay day y =
 //                                   |false -> 
 //                                     let i = fun (m,_ = month (max (d/30) 1) 
 //                                     m 
+// ATTEMPT 2
 //let monthDay day year =
-   match y < 1582 with
-   | true -> "Too Soon"
-   | false -> match (isLeap y) with
-              | true ->  match (day < 1 || day > 366) with
-                         | true -> failwith "Not a day"
-                         | false -> let rec MonthCalc mn dn =
-                                     let leap = [31;28;31;30;31;30;31;31;30;31;30;31]
-                                     match dn > 0 with
-                                     |true  -> MonthCalc (mn+1) dn-leap[mn] 
-                                     |false -> let m,_ = month(mn-1)
-                                               m
-                                    MonthCalc 1 day
-              |false -> match (day < 1 || day > 365) with
-                        | true -> failwith "Not a day"
-                        | false -> let rec MonthCalc mn dn =
-                                     let reg = [31,28,31,30,31,30,31,31,30,31,30,31]
-                                     match dn > 0 with
-                                     |true  -> MonthCalc (mn+1) dn-reg[mn] 
-                                     |false -> let m,_ = month(mn-1)
-                                               m
-                                   MonthCalc 1 day
-  
-  //
-  //[31;28;31;30;31;30;31;31;30;31;30;31]
-let coord _ =
-    failwith "Not implemented"
+//  match y < 1582 with
+//  | true -> "Too Soon"
+//  | false -> match (isLeap y) with
+//             | true ->  match (day < 1 || day > 366) with
+//                        | true -> failwith "Not a day"
+//                        | false -> let rec MonthCalc mn dn =
+//                                    let leap = [31;28;31;30;31;30;31;31;30;31;30;31]
+//                                    match dn > 0 with
+//                                    |true  -> MonthCalc (mn+1) dn-leap[mn] 
+//                                    |false -> let m,_ = month(mn-1)
+//                                              m
+//                                   MonthCalc 1 day
+//             |false -> match (day < 1 || day > 365) with
+//                       | true -> failwith "Not a day"
+//                       | false -> let rec MonthCalc mn dn =
+//                                    let reg = [31,28,31,30,31,30,31,31,30,31,30,31]
+//                                    match dn > 0 with
+//                                    |true  -> MonthCalc (mn+1) dn-reg[mn] 
+//                                    |false -> let m,_ = month(mn-1)
+//                                              m
+//                                  MonthCalc 1 day
+//[31;28;31;30;31;30;31;31;30;31;30;31]
+let sqrt n =
+    let rec calculate guess i =
+        match i with
+        | 10 -> guess
+        | _ ->
+            let g = (guess + n/guess) / 2.0
+            calculate g (i+1)
+    match n <= 0.0 with
+    | true -> failwith "Impossibru!"
+    | _ ->
+        calculate (n/2.0) 0
+
+
+let coord x =
+   let distance p2 =
+      match x,p2 with |((x1,y1),(x2,y2)) -> sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+   //The code below this comment is not my own.
+   let within lc w h =
+      match x,lc with | ((ic1,ic2), (lc1,lc2)) -> (ic1 : float) >= (lc1 : float) && (ic1 : float) <= (lc1+w : float) && (ic2 : float) <= (lc2 : float) && (ic2 : float) >= (lc2-h : float)
+   (distance, within)

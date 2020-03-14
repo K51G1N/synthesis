@@ -111,8 +111,6 @@ let bizFuzz n =
 
 //ATTEMPT 3, heavily based off of my second idea had my classmate help me finalise the syntax. His solution is entirely different.
 let monthDay day y =
-  let leap = [31;29;31;30;31;30;31;31;30;31;30;31]
-  let reg = [31;28;31;30;31;30;31;31;30;31;30;31]
   let getMonthName index =
     let (monthName, _) = month index
     monthName
@@ -126,15 +124,13 @@ let monthDay day y =
     | _ -> failwith ""
 
   let isInvalidCase = day<1 || y<1582
-  match isInvalidCase, (isLeap y) with 
-  | true, _ -> failwith ""
-  | _, true -> 
-    let monthIndex = subtract 1 day leap
-    getMonthName monthIndex
-  | _, false -> 
-    let monthIndex = subtract 1 day reg
-    getMonthName monthIndex
+  let monthIndex = 
+    match isInvalidCase, (isLeap y) with 
+    | true, _ -> failwith ""
+    | _, true -> subtract 1 day [31;29;31;30;31;30;31;31;30;31;30;31]
+    | _, false -> subtract 1 day [31;28;31;30;31;30;31;31;30;31;30;31]
 
+  getMonthName monthIndex
 //ATTEMPT 1
 //let monthDay d y =
 // failwith "Not implemented"
